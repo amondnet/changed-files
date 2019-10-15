@@ -43,6 +43,8 @@ async function run () {
   try {
     const token = core.getInput('repo-token', { required: true })
     const separator = core.getInput('separator', { required: false })
+    const include = core.getInput('include', { required: false })
+    const endsWith = core.getInput('endsWith', { required: false })
 
     const client = new github.GitHub(token)
 
@@ -54,6 +56,17 @@ async function run () {
 
     core.debug(`Fetching changed files for pr #${prNumber}`)
     const changedFiles = await getChangedFiles(client, prNumber)
+
+    if ( include ) {
+      changedFiles.created = changedFiles.created.filter((v) => v.includes(include))
+      changedFiles.updated = changedFiles.updated.filter((v) => v.includes(include))
+      changedFiles.deleted = changedFiles.deleted.filter((v) => v.includes(include))
+    }
+    if ( endsWith ) {
+      changedFiles.created = changedFiles.created.filter((v) => v.endsWith(endsWith))
+      changedFiles.updated = changedFiles.updated.filter((v) => v.endsWith(endsWith))
+      changedFiles.deleted = changedFiles.deleted.filter((v) => v.endsWith(endsWith))
+    }
 
     core.exportVariable('FILES_CREATED', changedFiles.created.join(separator))
     core.exportVariable('FILES_UPDATED', changedFiles.updated.join(separator))

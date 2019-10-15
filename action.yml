@@ -9,6 +9,18 @@ inputs:
     description: 'separator'
     required: false
     default: ','
+  exclude:
+    description: 'exclude'
+    required: false
+    default: ''
+  include:
+    description: 'include'
+    required: false
+    default: ''
+  endsWith:
+    description: 'endsWith'
+    required: false
+    default: ''
 
 runs:
   using: 'node12'
