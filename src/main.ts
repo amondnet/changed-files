@@ -42,6 +42,8 @@ function getPrNumber (): number | null {
 async function run () {
   try {
     const token = core.getInput('repo-token', { required: true })
+    const separator = core.getInput('separator', { required: false })
+
     const client = new github.GitHub(token)
 
     const prNumber = getPrNumber()
@@ -53,9 +55,9 @@ async function run () {
     core.debug(`Fetching changed files for pr #${prNumber}`)
     const changedFiles = await getChangedFiles(client, prNumber)
 
-    core.exportVariable('FILES_CREATED', changedFiles.created.join())
-    core.exportVariable('FILES_UPDATED', changedFiles.updated.join())
-    core.exportVariable('FILES_DELETED', changedFiles.deleted.join())
+    core.exportVariable('FILES_CREATED', changedFiles.created.join(separator))
+    core.exportVariable('FILES_UPDATED', changedFiles.updated.join(separator))
+    core.exportVariable('FILES_DELETED', changedFiles.deleted.join(separator))
   } catch (error) {
     core.error(error)
     core.setFailed(error.message)
